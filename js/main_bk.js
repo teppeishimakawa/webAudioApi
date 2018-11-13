@@ -6,8 +6,8 @@ var cost="";
 var costArray=[];
 
 baseArray=[
-5554211100000000,5554211100000000,5554211110000000,
-5554211000000000,5553110000000000,4442000000000000
+0000000000000000,5554211100000000,5554211100000000,5554211110000000,
+5554211000000000,5553110000000000,4442000000000000,1110000000000000
 ];
 
 document.getElementById('button').addEventListener('click',function()
@@ -38,20 +38,17 @@ canvas.setAttribute('width', analyser.frequencyBinCount * 10); //fftの1/2*10
 canvas.setAttribute('height', window.innerHeight/5);
 
 
-
-
 render();
 
-setTimeout(end,30000);
+setTimeout(end,4200);
 
-var timer1=setInterval(write,500);
+setInterval(write,500);
 
 
 //render()後4.2sでendが発火
 function end()
   {
   cancelAnimationFrame(requestId);
-  clearInterval(timer1);
   }
 
 
@@ -82,50 +79,29 @@ function write()
  {
 //leven start
   var final='';
-  var final2='';
   var oriArray='';
-  var a="";
-  var b="";
-  var costplus="";
-  var costArray=[];
-  var costfinal="";
-
+  var a,b;
   for(i=30;i<result.length;i=i+30)
   {
      oriArray=result[i];
      final += result[i];
   //for leven
   var a=result[i].toString();
+
   var kekka=final.replace(/\B(?=(\d{16})+(?!\d))/g,',');
   document.getElementById("txt").value=kekka;
-  }
 
+  }
  for(i=1;i<baseArray.length;i++)
-  {
+   {
   var b=baseArray[i].toString();
-  final2 += baseArray[i];
-  var kekka2=final2.replace(/\B(?=(\d{16})+(?!\d))/g,',');
-  document.getElementById("txt2").value=kekka2;
+   }
 
+a="aaaaa";
+b="bb"
 cost = levenshteinDistance(a,b);
-//console.log(a);
-//console.log(b);
-//console.log(cost);
-costArray.push(cost);
 
-  }
-
-  for(i=0;i<costArray.length;i++)
-   {
-   costfinal += costArray[i];
-   document.getElementById("cost").value=costfinal;
-   console.log(costfinal);
-
-   if(costArray[i] <4 && costArray[i+1] < 4)
-   {
-    alert("match!");
-   }
-   }
+document.getElementById("cost").value=cost;
 
 
 function levenshteinDistance( str1, str2 )
