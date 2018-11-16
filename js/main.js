@@ -5,10 +5,18 @@ var result2="";
 var cost="";
 var costArray=[];
 
-baseArray=[
+/*
 5554211100000000,5554211100000000,5554211110000000,
 5554211000000000,5553110000000000,4442000000000000
+
+*/
+
+baseArray=[
+5555432111100000,5555432110000000,5555432111100000,
+5555432110000000,5555322100000000,4554211000000000,
+2221000000000000
 ];
+
 
 document.getElementById('button').addEventListener('click',function()
 {
@@ -23,10 +31,15 @@ document.getElementById('button').addEventListener('click',function()
   {
        var audioCtx = new AudioContext();
        var source = audioCtx.createMediaStreamSource(stream);
+       var filter = audioCtx.createBiquadFilter();
+       filter.type=0;
+       filter.frequency.value = 5000;
+       filter.Q.value = 5;
        var analyser = audioCtx.createAnalyser();
-       analyser.fftSize = 32;
+       analyser.fftSize = 64;
        analyser.smoothingTimeConstant=0.8;
-       source.connect(analyser);
+       source.connect(filter);
+       filter.connect(analyser);
        var bufferLength=analyser.frequencyBinCount; //fftの1/2
        var dataArray=new Uint8Array(bufferLength); //16個の0-255値
        //analyser.connect(audioCtx.destination);
@@ -38,16 +51,15 @@ canvas.setAttribute('width', analyser.frequencyBinCount * 10); //fftの1/2*10
 canvas.setAttribute('height', window.innerHeight/5);
 
 
-
-
 render();
 
+//解析時間
 setTimeout(end,30000);
-
+//leven解析間隔
 var timer1=setInterval(write,500);
 
 
-//render()後4.2sでendが発火
+//render()後30sでendが発火
 function end()
   {
   cancelAnimationFrame(requestId);
@@ -70,9 +82,15 @@ function render()
   // \B:単語の境界(空白、カンマ、ピリオド)以外の位置 (?=aaa):aaaの直前の位置
   //(?!aaa):aaaではない直前の位置。カンマ挿入された後も正常処理できるよう。
   //g:繰り返しオプション
-  result=result.replace(/\B(?=(\d{16})+(?!\d))/g,',');
+  result=result.replace(/\B(?=(\d{32})+(?!\d))/g,',');
   //解析結果の配列
   result=result.split(",");
+  result=result.map(function(value)
+  {
+   return value.slice(0,16);
+  });
+
+
   //for render ()
   requestId=requestAnimationFrame(render);
  }
@@ -100,7 +118,7 @@ function write()
   document.getElementById("txt").value=kekka;
   }
 
- for(i=1;i<baseArray.length;i++)
+ for(i=0;i<baseArray.length;i++)
   {
   var b=baseArray[i].toString();
   final2 += baseArray[i];
